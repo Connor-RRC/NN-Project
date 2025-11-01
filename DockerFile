@@ -1,0 +1,23 @@
+# GPU-enabled base image
+FROM nvidia/cuda:12.4.1-base-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system tools
+RUN apt-get update && apt-get install -y python3 python3-pip git
+
+# Install PyTorch with CUDA support
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Copy your repository into /app
+WORKDIR /app
+COPY . /app
+
+# Install YOLOv8 in editable mode so your source edits take effect immediately
+RUN pip install -e ./ultralytics
+
+# Install some common libraries for training and visualization
+RUN pip install opencv-python matplotlib seaborn tqdm
+
+# Default command when container starts
+CMD ["bash"]
